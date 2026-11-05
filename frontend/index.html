@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VideoHub</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <a href="index.html">▶ Reproductor</a>
+  <nav><select id="category" aria-label="Categoría"><option value="">Todas</option></select></nav>
+</header>
+<main><h1>Catálogo</h1><section id="gallery" class="grid" aria-live="polite"></section></main>
+<footer><p>Proyecto Full Stack · FastAPI + SQLModel + AWS S3</p></footer>
+<script src="app.js"></script>
+<script>
+const gallery = document.getElementById("gallery");
+const select = document.getElementById("category");
+async function load(category = "") {
+  try {
+    const videos = await api("/videos" + (category ? `?category=${encodeURIComponent(category)}` : ""));
+    videos.length ? renderList(gallery, videos) : showMessage(gallery, "No hay videos.");
+  } catch (e) { showMessage(gallery, "No se pudo cargar el catálogo."); }
+}
+(async () => {
+  try {
+    (await api("/categories")).forEach(c => select.append(el("option", { value: c, text: c })));
+  } catch (e) {}
+  load();
+})();
+select.addEventListener("change", () => load(select.value));
+</script>
+</body>
+</html>

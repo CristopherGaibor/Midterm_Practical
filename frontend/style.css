@@ -1,0 +1,31 @@
+:root{--bg:#0f1117;--card:#1a1d27;--accent:#ff4d6d;--text:#eef0f5;--muted:#9aa0b4}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;display:grid;grid-template-rows:auto 1fr auto;min-height:100vh}
+header,footer{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem 1rem;background:var(--card)}
+header a{color:var(--text);text-decoration:none;font-weight:700}
+footer{justify-content:center;color:var(--muted);font-size:.85rem}
+main{padding:1rem}
+select,input,textarea,button{font:inherit;padding:.5rem .75rem;border-radius:.5rem;border:1px solid #333a50;background:var(--bg);color:var(--text)}
+button{background:var(--accent);border:0;cursor:pointer;transition:transform .2s,filter .2s}
+button:hover{transform:scale(1.05);filter:brightness(1.1)}
+.grid{display:grid;grid-template-columns:1fr;gap:1rem}
+.card{display:flex;flex-direction:column;background:var(--card);border-radius:.75rem;overflow:hidden;text-decoration:none;color:inherit;
+  transition:transform .3s,box-shadow .3s;animation:fade .5s both}
+.card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 10px 25px rgba(0,0,0,.5)}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .4s}
+.card:hover img{transform:scale(1.08)}
+.card div{padding:.6rem .8rem;display:flex;flex-direction:column;gap:.2rem;overflow:hidden}
+.card img{display:block}
+.card small{color:var(--muted)}
+.layout{display:grid;grid-template-columns:1fr;gap:1.5rem}
+video{width:100%;border-radius:.75rem;background:#000}
+.comments form{display:flex;flex-direction:column;gap:.5rem;margin:1rem 0}
+.comment{background:var(--card);padding:.6rem .8rem;border-radius:.5rem;margin-bottom:.5rem;animation:slide .4s both}
+.comment small{color:var(--muted)}
+aside .card{flex-direction:row;margin-bottom:.75rem}
+aside .card img{width:40%;aspect-ratio:16/9}
+@keyframes fade{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:none}}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:2fr 1fr}}
+@media(min-width:1200px){.grid{grid-template-columns:repeat(4,1fr)}}

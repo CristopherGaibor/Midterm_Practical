@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reproductor · VideoHub</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><a href="index.html">▶ VideoHub</a><a href="index.html">← Volver</a></header>
+<main class="layout">
+  <article>
+    <video id="player" controls preload="metadata"></video>
+    <h1 id="title"></h1><p id="meta"></p><p id="desc"></p>
+    <section class="comments">
+      <h2>Comentarios (<span id="count">0</span>)</h2>
+      <form id="form">
+        <input id="author" placeholder="Tu nombre" maxlength="40" required>
+        <textarea id="text" placeholder="Escribe un comentario" maxlength="500" required></textarea>
+        <button type="submit">Comentar</button>
+      </form>
+      <div id="list"></div>
+    </section>
+  </article>
+  <aside><h2>Recomendados</h2><div id="recs"></div></aside>
+</main>
+<footer><p>Proyecto Full Stack · FastAPI + SQLModel + AWS S3</p></footer>
+<script src="app.js"></script>
+<script>
+const id = new URLSearchParams(location.search).get("id");
+const list = document.getElementById("list");
+const count = document.getElementById("count");
+
+function commentNode(c) {
+  return el("div", { className: "comment" },
+    el("strong", { text: c.author }), " ",
+    el("small", { text: new Date(/Z|[+-]\d\d:\d\d$/.test(c.created_at) ? c.created_at : c.created_at + "Z").toLocaleString() }),
+    el("p", { text: c.text }));
+}
+async function init() {
+  try {
+    const v = await api(`/videos/${id}`);
+    document.title = v.title;
+    const p = document.getElementById("player");
+    p.src = v.video_url; p.poster = v.thumbnail_url;
+    document.getElementById("title").textContent = v.title;
+    document.getElementById("meta").textContent = "Categoría: " + v.category;
+    document.getElementById("desc").textContent = v.description;
+    const comments = await api(`/videos/${id}/comments`);
+    list.replaceChildren(...comments.map(commentNode));
+    count.textContent = comments.length;
+    renderList(document.getElementById("recs"), await api(`/videos/${id}/recommendations`));
+  } catch (e) { showMessage(document.querySelector("article"), "No se pudo cargar el video."); }
+}
+document.getElementById("form").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const author = document.getElementById("author"), text = document.getElementById("text");
+  try {
+    const c = await api(`/videos/${id}/comments`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ author: author.value, text: text.value })
+    });
+    list.prepend(commentNode(c));
+    count.textContent = +count.textContent + 1;
+    text.value = "";
+  } catch (e) { alert("No se pudo enviar el comentario."); }
+});
+init();
+</script>
+</body>
+</html>
