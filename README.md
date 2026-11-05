@@ -1,4 +1,4 @@
-# VideoHub
+# Reproductor
 
 Plataforma de videos Full Stack: FastAPI + SQLModel (SQLite) + AWS S3 + frontend HTML/CSS/JS.
 
